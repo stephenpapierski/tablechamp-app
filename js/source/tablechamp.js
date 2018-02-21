@@ -498,6 +498,21 @@
                 "singles_rank" : localData.playersByKey[thisKey].singles_rank,
                 "singles_won" : localData.playersByKey[thisKey].singles_won
             }));
+            // Which match type stats to show
+            var matchType = localData.settings.matchType;
+            var singlesStatsCol = $('.stats-singles-col');
+            var doublesStatsCol = $('.stats-doubles-col');
+
+            if (matchType == "singles") {
+                singlesStatsCol.show();
+                doublesStatsCol.hide();
+            } else if (matchType == "doubles") {
+                singlesStatsCol.hide();
+                doublesStatsCol.show();
+            } else{
+                singlesStatsCol.show();
+                doublesStatsCol.show();
+            }
             // Player games stats
             var lastTwentyGames = '';
             var lastTwentyGamesData = [];
