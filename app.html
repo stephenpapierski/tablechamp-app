@@ -147,12 +147,18 @@
 					<label for="game5"><input type="radio" name="gameType" id="game5" value="table-tennis"> <span><%=gameTableTennis%></span></label>
 				</div>
 				<div class="control">
+					<strong><%=whatMatchType%>?</strong>
+					<label for="matchType1"><input type="radio" name="matchType" id="matchType1" value="singles"> <span><%=matchTypeSingles%></span></label>
+					<label for="matchType2"><input type="radio" name="matchType" id="matchType2" value="doubles"> <span><%=matchTypeDoubles%></span></label>
+					<label for="matchType3"><input type="radio" name="matchType" id="matchType3" value="both"> <span><%=matchTypeBoth%></span></label>
+				</div>
+				<div class="control">
 					<strong><%=language%></strong>
 					<select class="lang">
-						<option value="da">dansk</option>
-						<option value="de">Deutsche</option>
+						<!-- <option value="da">dansk</option>
+						<option value="de">Deutsche</option> -->
 						<option value="en">English</option>
-						<option value="es">Español</option>
+						<!-- <option value="es">Español</option>
 						<option value="fr">français</option>
 						<option value="hi">हिंदी</option>
 						<option value="id">bahasa Indonesia</option>
@@ -162,7 +168,7 @@
 						<option value="pt">Português</option>
 						<option value="ru">русский</option>
 						<option value="sv">svenska</option>
-						<option value="zh">中文</option>
+						<option value="zh">中文</option> -->
 					</select>
 				</div>
 				<div class="control">
@@ -303,20 +309,20 @@
 			.modal { background: <%=c0%>; }
 			.color-tx-0,
 			.c-button:active,
-  			.c-button:focus,
-  			.c-button:hover,
-  			.c-button.is-selected,
-  			.ranking,
-  			.top-rankings .movement,
-  			.top-rankings .rank,
-  			.top-rankings .ranking,
-  			header .name,
-  			.movement-positive { color: <%=c0%> }
+			.c-button:focus,
+			.c-button:hover,
+			.c-button.is-selected,
+			.ranking,
+			.top-rankings .movement,
+			.top-rankings .rank,
+			.top-rankings .ranking,
+			header .name,
+			.movement-positive { color: <%=c0%> }
 
-  			/* Color 1 */
+			/* Color 1 */
 			.c-button,
 			.color-tx-1 { color: <%=c1%>; }
-  			.ranking:focus,
+			.ranking:focus,
 			.ranking:hover { border-color: <%=c1%>; }
 
 			/* Color 2 */
@@ -351,33 +357,33 @@
 			body { background: <%=c4%>; }
 
 			/* Links */
-			.c-button--link { 
-  				background: transparent;
-  				border: transparent;
-  				color: <%=c1%>;
-  			}
-  			.c-button--link:active,
-  			.c-button--link:focus,
-  			.c-button--link:hover { 
-  				background: transparent;
-  				border: transparent;
-  				color: <%=c0%>;
-  			}
-  			
+			.c-button--link {
+				background: transparent;
+				border: transparent;
+				color: <%=c1%>;
+			}
+			.c-button--link:active,
+			.c-button--link:focus,
+			.c-button--link:hover {
+				background: transparent;
+				border: transparent;
+				color: <%=c0%>;
+			}
+
 			/* Primary */
-  			.c-button--primary { 
-  				background: transparent;
-  				border-color: <%=c5%>;
-  				color: <%=c5%>;
-  			}
-  			.c-button--primary:active,
-  			.c-button--primary:focus,
-  			.c-button--primary:hover {
-  				background: <%=c5%>;
-  				border-color: <%=c5%>;
-  				color: <%=c0%>;
-  				text-decoration: none;
-  			}
+			.c-button--primary {
+				background: transparent;
+				border-color: <%=c5%>;
+				color: <%=c5%>;
+			}
+			.c-button--primary:active,
+			.c-button--primary:focus,
+			.c-button--primary:hover {
+				background: <%=c5%>;
+				border-color: <%=c5%>;
+				color: <%=c0%>;
+				text-decoration: none;
+			}
 		</style>
 	</script>
 </body>

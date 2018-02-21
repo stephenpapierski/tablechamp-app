@@ -286,6 +286,7 @@
         }
         localData.settings.orgName = (typeof data.orgName !== 'undefined') ? data.orgName : '';
         localData.settings.gameType = (typeof data.gameType !== 'undefined') ? data.gameType : '';
+        localData.settings.matchType = (typeof data.matchType !== 'undefined') ? data.matchType : '';
         if (typeof data.appColors === 'undefined') {
             data.appColors = {};
         }
@@ -295,7 +296,7 @@
         localData.settings.appColors.c3 = (typeof data.appColors.c3 !== 'undefined') ? data.appColors.c3 : defaultColors.c3;
         localData.settings.appColors.c4 = (typeof data.appColors.c4 !== 'undefined') ? data.appColors.c4 : defaultColors.c4;
         localData.settings.appColors.c5 = (typeof data.appColors.c5 !== 'undefined') ? data.appColors.c5 : defaultColors.c5;
-        /* Dark 
+        /* Dark
         'c0' : '#FFF',
         'c1' : '#8F9EAB',
         'c2' : '#67727B',
@@ -583,6 +584,24 @@
         } else {
             singles.hide();
             doubles.fadeIn();
+        }
+    }
+    function matchTypeToggle(matchType) {
+        var singlesToggle = $('.singles-toggle');
+        var doublesToggle = $('.doubles-toggle');
+
+        if (matchType == "singles") {
+            singlesToggle.show();
+            doublesToggle.hide();
+            rankingToggle('singles')
+        } else if (matchType == "doubles") {
+            singlesToggle.hide();
+            doublesToggle.show();
+            rankingToggle('doubles');
+        } else{
+            singlesToggle.show();
+            doublesToggle.show();
+            rankingToggle('singles')
         }
     }
     function singlesRankingsUpdate() {
@@ -1017,7 +1036,7 @@
             console.log('Failed to update players data');
         });
         // Save "players_game" data
-        var playersGameData = { 
+        var playersGameData = {
             "dt": Date.now(),
             "game": gameKey,
             "player": key,
@@ -1136,6 +1155,12 @@
         }
         $('.game-type').text(gameType);
         $('input[value="' + localData.settings.gameType + '"]').prop('checked', true);
+
+        // Update match type
+        $('input[value="' + localData.settings.matchType + '"]').prop('checked', true);
+        matchTypeToggle(localData.settings.matchType);
+
+        // Update language
         var lang = localStorage.getItem('lang') || 'en';
         $('.lang option[value="' + lang + '"]').attr("selected", true);
     }
@@ -1196,7 +1221,11 @@
             "language" : i18n.app.settingsBasics.language,
             "nextButton" : i18n.app.global.nextButton,
             "orgName" : i18n.app.settingsBasics.orgName,
-            "whatGame" : i18n.app.settingsBasics.whatGame
+            "whatGame" : i18n.app.settingsBasics.whatGame,
+            "whatMatchType" : i18n.app.settingsBasics.whatMatchType,
+            "matchTypeSingles" : i18n.app.settingsBasics.matchTypeSingles,
+            "matchTypeDoubles" : i18n.app.settingsBasics.matchTypeDoubles,
+            "matchTypeBoth" : i18n.app.settingsBasics.matchTypeBoth,
         }));
         sidebarInitBasicEvents();
         sidebarBasicSettingsUpdate();
@@ -1227,6 +1256,17 @@
                 messageShow('success', i18n.app.messages.gameTypeUpdated, true);
             }).catch(function(error) {
                 console.log('Failed to update game type');
+            });
+            return false;
+        });
+        // Update match type
+        $('input[name="matchType"]').off('change').on('change', function() {
+            fbdb.ref('/settings/').update({
+                'matchType': $(this).val()
+            }, function() {
+                messageShow('success', i18n.app.messages.matchTypeUpdated, true);
+            }).catch(function(error) {
+                console.log('Failed to update match type');
             });
             return false;
         });
@@ -1352,7 +1392,7 @@
                 var newPlayerKey = fbdb.ref().child('players').push().key;
                 // Add new player
                 var dbPlayers = fbdb.ref('/players/' + newPlayerKey);
-                dbPlayers.set({ 
+                dbPlayers.set({
                     "doubles_last_movement": '',
                     "doubles_lost": 0,
                     "doubles_points": 100,
@@ -1363,7 +1403,7 @@
                     "singles_lost": 0,
                     "singles_points": 100,
                     "singles_won": 0,
-                    "status": true 
+                    "status": true
                 }).then(function() {
                     playerSettingsUpdate();
                     messageShow('success', i18n.app.messages.playerAdded, true);
@@ -1412,12 +1452,12 @@
         var windowHeight = parseInt($(window).height());
         var newSidebarHeight = Math.max(sidebarHeight, windowHeight);
         $('.sidebar').css('height', newSidebarHeight + 'px');
-    }  
+    }
     function sidebarShow() {
         $('body').addClass('show-sidebar');
         sidebarInitBasic();
         sidebarResetHeight();
-    }     
+    }
     function sidebarToggle() {
         var body = $('body');
         if (body.hasClass('show-sidebar')) {

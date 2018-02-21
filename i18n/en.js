@@ -31,7 +31,8 @@ var i18n = {
 			"playerStatusUpdated" : "Player Status Updated",
 			"playerUpdated" : "Player Updated",
 			"scoreBoth" : "Enter a score for both teams",
-			"undo" : "Undo"
+			"undo" : "Undo",
+			"matchTypeUpdated" : "Match Types Updated",
 		},
 		"playersRow" : {
 			"deleteLink" : "Delete"
@@ -53,7 +54,12 @@ var i18n = {
 			"gameTableTennis" : "Table Tennis",
 			"language" : "Language",
 			"orgName" : "What is the name of your organization",
-			"whatGame" : "What game will you be playing"
+			"whatGame" : "What game will you be playing",
+			"whatMatchType" : "What matches do you want to track",
+			"matchTypeSingles" : "Singles",
+			"matchTypeDoubles" : "Doubles",
+			"matchTypeBoth" : "Both",
+
 		},
 		"settingsColors" : {
 			"highlightColor" : "Highlight color",
