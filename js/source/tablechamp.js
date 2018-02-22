@@ -481,22 +481,30 @@
             }));
             // Player stats
             var doublesPlayed = localData.playersByKey[thisKey].doubles_lost + localData.playersByKey[thisKey].doubles_won;
+            var doublesWon = localData.playersByKey[thisKey].doubles_won;
+            var doublesWinPercentage = ((doublesPlayed == 0) ? Number(0.0) : Number((doublesWon/doublesPlayed*100).toFixed(1)));
             var singlesPlayed = localData.playersByKey[thisKey].singles_lost + localData.playersByKey[thisKey].singles_won;
+            var singlesWon = localData.playersByKey[thisKey].singles_won;
+            var singlesWinPercentage = ((singlesPlayed == 0) ? Number(0.0) : Number((singlesWon/singlesPlayed*100).toFixed(1)));
             $('.stats-player').html(tmpl('statsPlayer', {
-                "doubles" : i18n.app.statsPlayer.doubles,
                 "doubles_lost" : localData.playersByKey[thisKey].doubles_lost,
                 "doubles_played" : doublesPlayed,
                 "doubles_rank" : localData.playersByKey[thisKey].doubles_rank,
-                "doubles_won" : localData.playersByKey[thisKey].doubles_won,
-                "gamesLost" : i18n.app.statsPlayer.gamesLost,
-                "gamesPlayed" : i18n.app.statsPlayer.gamesPlayed,
-                "gamesWon" : i18n.app.statsPlayer.gamesWon,
-                "ranking" : i18n.app.statsPlayer.ranking,
-                "singles" : i18n.app.statsPlayer.singles,
+                "doubles_won" : doublesWon,
+                "doubles_win_percentage" : doublesWinPercentage,
                 "singles_lost" : localData.playersByKey[thisKey].singles_lost,
                 "singles_played" : singlesPlayed,
                 "singles_rank" : localData.playersByKey[thisKey].singles_rank,
-                "singles_won" : localData.playersByKey[thisKey].singles_won
+                "singles_won" : singlesWon,
+                "singles_win_percentage" : singlesWinPercentage,
+                // Language translations
+                "doubles" : i18n.app.statsPlayer.doubles,
+                "singles" : i18n.app.statsPlayer.singles,
+                "gamesLost" : i18n.app.statsPlayer.gamesLost,
+                "gamesPlayed" : i18n.app.statsPlayer.gamesPlayed,
+                "gamesWon" : i18n.app.statsPlayer.gamesWon,
+                "winPercentage" : i18n.app.statsPlayer.winPercentage,
+                "ranking" : i18n.app.statsPlayer.ranking,
             }));
             // Which match type stats to show
             var matchType = localData.settings.matchType;
