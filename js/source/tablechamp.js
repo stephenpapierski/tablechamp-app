@@ -509,7 +509,7 @@
             } else if (matchType == "doubles") {
                 singlesStatsCol.hide();
                 doublesStatsCol.show();
-            } else{
+            } else {
                 singlesStatsCol.show();
                 doublesStatsCol.show();
             }
@@ -517,7 +517,20 @@
             var lastTwentyGames = '';
             var lastTwentyGamesData = [];
             var playersGames = {};
-            fbdb.ref('/playersgame/' + thisKey).limitToLast(20).once('value').then(function(snapshot) {
+            var playerGamesRef;
+
+            if (matchType == "singles") {
+                // Grabs db entries where t1p2 (team1player2) field is null since singles games won't have a second team player
+                playerGamesRef = fbdb.ref('/playersgame/' + thisKey).orderByChild("t1p2").endAt(null).limitToLast(20).once('value');
+            } else if (matchType == "doubles") {
+                // Grabs db entries where t1p2 (team1player2) field is not null since doubles games will have second team player
+                playerGamesRef = fbdb.ref('/playersgame/' + thisKey).orderByChild("t1p2").startAt("").limitToLast(20).once('value');
+            } else {
+                // Grabs last 20 singles and doubles games
+                playerGamesRef = fbdb.ref('/playersgame/' + thisKey).limitToLast(20).once('value');
+            }
+
+            playerGamesRef.then(function(snapshot) {
                 playersGames = snapshot.val();
                 // To array
                 for (var key in playersGames) {
