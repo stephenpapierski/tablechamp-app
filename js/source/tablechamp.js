@@ -482,10 +482,10 @@
             // Player stats
             var doublesPlayed = localData.playersByKey[thisKey].doubles_lost + localData.playersByKey[thisKey].doubles_won;
             var doublesWon = localData.playersByKey[thisKey].doubles_won;
-            var doublesWinPercentage = ((doublesPlayed == 0) ? Number(0.0) : Number((doublesWon/doublesPlayed*100).toFixed(1)));
+            var doublesWinPercentage = ((doublesPlayed == 0) ? Number(0.0) : Math.round(Number((doublesWon/doublesPlayed*100))));
             var singlesPlayed = localData.playersByKey[thisKey].singles_lost + localData.playersByKey[thisKey].singles_won;
             var singlesWon = localData.playersByKey[thisKey].singles_won;
-            var singlesWinPercentage = ((singlesPlayed == 0) ? Number(0.0) : Number((singlesWon/singlesPlayed*100).toFixed(1)));
+            var singlesWinPercentage = ((singlesPlayed == 0) ? Number(0.0) : Math.round(Number((singlesWon/singlesPlayed*100))));
             $('.stats-player').html(tmpl('statsPlayer', {
                 "doubles_lost" : localData.playersByKey[thisKey].doubles_lost,
                 "doubles_played" : doublesPlayed,
