@@ -527,16 +527,20 @@
             var playersGames = {};
             var playerGamesRef;
 
-            if (matchType == "singles") {
-                // Grabs db entries where t1p2 (team1player2) field is null since singles games won't have a second team player
-                playerGamesRef = fbdb.ref('/playersgame/' + thisKey).orderByChild("t1p2").endAt(null).limitToLast(20).once('value');
-            } else if (matchType == "doubles") {
-                // Grabs db entries where t1p2 (team1player2) field is not null since doubles games will have second team player
-                playerGamesRef = fbdb.ref('/playersgame/' + thisKey).orderByChild("t1p2").startAt("").limitToLast(20).once('value');
-            } else {
+            // TODO: Only grab singles or doubles games if those are the only matchTypes being tracked.
+            // The implementation commented out only grabs singles or doubles games but does not display them in the correct order.
+            // Currently reverting back to grabbing all the games just so they show up in the right order.
+            //
+            // if (matchType == "singles") {
+            //     // Grabs db entries where t1p2 (team1player2) field is null since singles games won't have a second team player
+            //     playerGamesRef = fbdb.ref('/playersgame/' + thisKey).orderByChild("t1p2").endAt(null).limitToLast(20).once('value');
+            // } else if (matchType == "doubles") {
+            //     // Grabs db entries where t1p2 (team1player2) field is not null since doubles games will have second team player
+            //     playerGamesRef = fbdb.ref('/playersgame/' + thisKey).orderByChild("t1p2").startAt("").limitToLast(20).once('value');
+            // } else {
                 // Grabs last 20 singles and doubles games
-                playerGamesRef = fbdb.ref('/playersgame/' + thisKey).limitToLast(20).once('value');
-            }
+            playerGamesRef = fbdb.ref('/playersgame/' + thisKey).limitToLast(20).once('value');
+            // }
 
             playerGamesRef.then(function(snapshot) {
                 playersGames = snapshot.val();
