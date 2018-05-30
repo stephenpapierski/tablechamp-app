@@ -27,6 +27,8 @@
 			<div class="top-rankings"></div>
 			<div class="rankings"></div>
 		</div>
+		<div class="games_history">
+		</div>
 	</div>
 	<div class="modal-backdrop show">
 		<div class="modal"></div>
@@ -47,8 +49,9 @@
 			<span class="game-type"></span>
 		</div>
 		<div class="header-block">
-			<a href="#" class="singles-toggle ranking-toggle c-button c-button--md is-selected" tabindex="-1" data-view="singles"><%=singles%></a>
-			<a href="#" class="doubles-toggle ranking-toggle c-button c-button--md" data-view="doubles"><%=doubles%></a>
+			<a href="#" class="singles-toggle active-tab-toggle c-button c-button--md is-selected" tabindex="-1" data-view="singles"><%=singles%></a>
+			<a href="#" class="doubles-toggle active-tab-toggle c-button c-button--md" data-view="doubles"><%=doubles%></a>
+			<a href="#" class="active-tab-toggle c-button c-button--md games" data-view="games_history"><%=games%></a>
 			<a href="#" class="c-button c-button--link settings"><%=settings%></a>
 			<a href="#" class="c-button c-button--link logout"><%=logOut%></a>
 		</div>

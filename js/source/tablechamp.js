@@ -65,7 +65,8 @@
             "doubles" : i18n.app.appHeader.doubles,
             "logOut" : i18n.app.appHeader.logOut,
             "settings" : i18n.app.appHeader.settings,
-            "singles" : i18n.app.appHeader.singles
+            "singles" : i18n.app.appHeader.singles,
+            "games" : i18n.app.appHeader.games,
         }));
         $('.app .name').on('click', function() {
             sidebarShow();
@@ -91,9 +92,9 @@
             return false;
         });
         // Ranking toggle
-        $('.ranking-toggle').on('click', function() {
+        $('.active-tab-toggle').on('click', function() {
             var thisView = $(this).data('view');
-            rankingToggle(thisView)
+            activeTabToggle(thisView)
             return false;
         });
         // Settings Link
@@ -611,17 +612,25 @@
         }
         return movement;
     }
-    function rankingToggle(viewType) {
+    function activeTabToggle(viewType) {
         var doubles = $('.doubles');
         var singles = $('.singles');
+        var games_history = $('.games_history');
         // Active link
-        $('.ranking-toggle').removeClass('is-selected');
-        $('.ranking-toggle[data-view="' + viewType + '"]').addClass('is-selected');
+        $('.active-tab-toggle').removeClass('is-selected');
+        $('.active-tab-toggle[data-view="' + viewType + '"]').addClass('is-selected');
         // Hide/show singles/doubles
-        if ('singles' === viewType) {
+        if ('games_history' === viewType){
+            games_history.fadeIn();
+            doubles.hide();
+            singles.hide();
+        }
+        else if ('singles' === viewType) {
+            games_history.hide();
             doubles.hide();
             singles.fadeIn();
         } else {
+            games_history.hide();
             singles.hide();
             doubles.fadeIn();
         }
@@ -633,15 +642,15 @@
         if (matchType == "singles") {
             singlesToggle.show();
             doublesToggle.hide();
-            rankingToggle('singles')
+            activeTabToggle('singles')
         } else if (matchType == "doubles") {
             singlesToggle.hide();
             doublesToggle.show();
-            rankingToggle('doubles');
+            activeTabToggle('doubles');
         } else{
             singlesToggle.show();
             doublesToggle.show();
-            rankingToggle('singles')
+            activeTabToggle('singles')
         }
     }
     function singlesRankingsUpdate() {
@@ -921,7 +930,7 @@
             scoringSave('t2p1', 'doubles', t2p1Key, t2p1PointsNew, t2p1LastMovement, t2p1GamesLost, t2p1GamesWon, newGameKey, t1p1Key, t1p2Key, t2p1Key, t2p2Key, t1s, t2s, t2Won);
             scoringSave('t2p2', 'doubles', t2p2Key, t2p2PointsNew, t2p2LastMovement, t2p2GamesLost, t2p2GamesWon, newGameKey, t1p1Key, t1p2Key, t2p1Key, t2p2Key, t1s, t2s, t2Won);
             // Show doubles rankings
-            rankingToggle('doubles');
+            activeTabToggle('doubles');
         } else { // Singles
             // New singles player points
             var t1p1PointsNew = t1rp / decay_factor * [decay_factor - 1] + t1p / decay_factor;
@@ -987,7 +996,7 @@
             scoringSave('t1p1', 'singles', t1p1Key, t1p1PointsNew, t1p1LastMovement, t1p1GamesLost, t1p1GamesWon, newGameKey, t1p1Key, '', t2p1Key, '', t1s, t2s, t1Won);
             scoringSave('t2p1', 'singles', t2p1Key, t2p1PointsNew, t2p1LastMovement, t2p1GamesLost, t2p1GamesWon, newGameKey, t1p1Key, '', t2p1Key, '', t1s, t2s, t2Won);
             // Show singles rankings
-            rankingToggle('singles');
+            activeTabToggle('singles');
         }
         // Confirmation --------------------
         // Close modal
