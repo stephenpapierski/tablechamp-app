@@ -716,6 +716,10 @@
                         // Add game id to gameIds
                         gameIds.push(currentGameEntry.game);
 
+                        // TODO: figure out what to do with deleted players
+                        //       At least add a check that shows ("deleted player")
+                        //       for now. Eventually, I'd like "deleted" players
+                        //       to just become inactive from future games
                         gamesData.push({
                             "dt" : currentGameEntry.dt,
                             // "key" : playerGameKey,
@@ -731,8 +735,9 @@
                     }
                 }
             }
-            console.log(gamesData);
+            // console.log(gamesData);
             // TODO: sort games based on dt timestamp
+            // TODO: support output for singles games (just one player)
             var winTeam = '';
             var loseTeam = '';
             var winPoints;
