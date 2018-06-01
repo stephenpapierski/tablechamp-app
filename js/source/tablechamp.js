@@ -56,6 +56,7 @@
         initEvents();
         initSettingsListener();
         initPlayersListener();
+        initGamesListener();
         initOfflineDetect();
         sidebarInit();
     }
@@ -165,6 +166,16 @@
             singlesRankingsUpdate();
             // Rankings events
             rankingsEvents();
+        });
+    }
+    function initGamesListener(){
+        // TODO: This should probably be
+        // 1) watching /playersgame/
+        // 2) update local copy of games by game id
+        // 3) ...then updating the game history with the local copy
+        fbdb.ref('/games/').on('value', function(snapshot) {
+            // Update the game history display
+            gameHistoryUpdate(snapshot.val());
         });
     }
     function initSettingsListener() {
@@ -615,12 +626,12 @@
     function activeTabToggle(viewType) {
         var doubles = $('.doubles');
         var singles = $('.singles');
-        var games_history = $('.games_history');
+        var games_history = $('.games-history');
         // Active link
         $('.active-tab-toggle').removeClass('is-selected');
         $('.active-tab-toggle[data-view="' + viewType + '"]').addClass('is-selected');
         // Hide/show singles/doubles
-        if ('games_history' === viewType){
+        if ('games-history' === viewType){
             games_history.fadeIn();
             doubles.hide();
             singles.hide();
@@ -639,11 +650,11 @@
         var singlesToggle = $('.singles-toggle');
         var doublesToggle = $('.doubles-toggle');
 
-        if (matchType == "singles") {
+        if (matchType == 'singles') {
             singlesToggle.show();
             doublesToggle.hide();
             activeTabToggle('singles')
-        } else if (matchType == "doubles") {
+        } else if (matchType == 'doubles') {
             singlesToggle.hide();
             doublesToggle.show();
             activeTabToggle('doubles');
@@ -684,6 +695,73 @@
         }
         $('.singles .top-rankings').html(singlesTopRankings);
         $('.singles .rankings').html(singlesRankings);
+    }
+    // ---------------------------------------------------
+    // Game History
+    // ---------------------------------------------------
+    function gameHistoryUpdate(games) {
+        // Get player games stuff
+        fbdb.ref('/playersgame/').on('value', function(snapshot){
+            var gamesData = [];
+            // Ids of games already in gamesData
+            var gameIds = [];
+            var gameHistoryHtlm = '';
+            var playersGame = snapshot.val();
+
+            for (var playerKey in playersGame) {
+                for (var playerGameKey in playersGame[playerKey]) {
+                    // console.log(playersGame[playerKey][playerGameKey]);
+                    var currentGameEntry = playersGame[playerKey][playerGameKey]
+                    if (!gameIds.includes(currentGameEntry.game)) {
+                        // Add game id to gameIds
+                        gameIds.push(currentGameEntry.game);
+
+                        gamesData.push({
+                            "dt" : currentGameEntry.dt,
+                            // "key" : playerGameKey,
+                            "game" : currentGameEntry.game,
+                            "t1p1" : localData.playersByKey[currentGameEntry.t1p1],
+                            "t1p2" : localData.playersByKey[currentGameEntry.t1p2] || '',
+                            "t2p1" : localData.playersByKey[currentGameEntry.t2p1],
+                            "t2p2" : localData.playersByKey[currentGameEntry.t2p2] || '',
+                            "t1_points" : currentGameEntry.t1_points,
+                            "t2_points" : currentGameEntry.t2_points,
+                            // "won" : currentGameEntry.won
+                        });
+                    }
+                }
+            }
+            console.log(gamesData);
+            // TODO: sort games based on dt timestamp
+            var winTeam = '';
+            var loseTeam = '';
+            var winPoints;
+            var losePoints;
+            for (var i = 0; i < gamesData.length; i++) {
+                // console.log(gamesData[i]);
+                var game = gamesData[i];
+                if (game.t1_points > game.t2_points) {
+                    winTeam = game.t1p1.name + ' & ' + game.t1p2.name;
+                    winPoints = game.t1_points;
+                    loseTeam = game.t2p1.name + ' & ' + game.t2p2.name;
+                    losePoints = game.t2_points;
+                } else {
+                    loseTeam = game.t1p1.name + ' & ' + game.t1p2.name;
+                    losePoints = game.t1_points;
+                    winTeam = game.t2p1.name + ' & ' + game.t2p2.name;
+                    winPoints = game.t2_points;
+                }
+                // console.log(winTeam + '(' + winPoints + ') ' + loseTeam + '(' + losePoints + ')');
+                gameHistoryHtlm += tmpl('gamesHistory', {
+                    "t1" : winTeam,
+                    "t1Score" : winPoints,
+                    "t2" : loseTeam,
+                    "t2Score" : losePoints
+                });
+                $('.games-history .games-history-games ul').html(gameHistoryHtlm);
+            }
+        });
+
     }
     // ---------------------------------------------------
     // Scoring

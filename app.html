@@ -27,7 +27,12 @@
 			<div class="top-rankings"></div>
 			<div class="rankings"></div>
 		</div>
-		<div class="games_history">
+		<div class="games-history">
+			<div class="games-history-container"><table class="games-history-table"></table></div>
+			<div class="games-history-games">
+				<ul></ul>
+			</div>
+		</div>
 		</div>
 	</div>
 	<div class="modal-backdrop show">
@@ -51,7 +56,7 @@
 		<div class="header-block">
 			<a href="#" class="singles-toggle active-tab-toggle c-button c-button--md is-selected" tabindex="-1" data-view="singles"><%=singles%></a>
 			<a href="#" class="doubles-toggle active-tab-toggle c-button c-button--md" data-view="doubles"><%=doubles%></a>
-			<a href="#" class="active-tab-toggle c-button c-button--md games" data-view="games_history"><%=games%></a>
+			<a href="#" class="active-tab-toggle c-button c-button--md games" data-view="games-history"><%=games%></a>
 			<a href="#" class="c-button c-button--link settings"><%=settings%></a>
 			<a href="#" class="c-button c-button--link logout"><%=logOut%></a>
 		</div>
@@ -309,6 +314,9 @@
 	</script>
 	<script type="text/html" id="statsPlayerGames">
 		<li><strong class="<%=status%>"><%=status%></strong> <%=t1%> (<%=t1Score%>) vs. <%=t2%> (<%=t2Score%>)</li>
+	</script>
+	<script type="text/html" id="gamesHistory">
+		<li><%=t1%> (<%=t1Score%>) vs. <%=t2%> (<%=t2Score%>)</li>
 	</script>
 	<script type="text/html" id="cssBlock">
 		<style>
