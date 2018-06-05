@@ -1112,6 +1112,56 @@ body.ru .sidebar .sidebar-menu a {
     margin: 0;
     padding: 0; }
 
+.games-history {
+  width: 100%; }
+  .games-history td {
+    padding: 5px;
+    text-align: center; }
+  .games-history th {
+    color: #666;
+    font-weight: bold;
+    padding: 5px; }
+  .games-history .table-header th {
+    text-align: center; }
+
+/* .games-history-container {
+  background: #FFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 1px;
+  float: left;
+  padding: 16px;
+  width: 38%; } */
+
+.games-history-games {
+  display: inline-block;
+  /* float: right; */
+  background: #FFF;
+  border: 1px solid #E5E5E5;
+  /* float: center; */
+  padding: 16px 20px;
+  margin: 1% 0 0 1%;
+  width: 60%; }
+  .games-history-games li {
+    line-height: 30px;
+    list-style: none;
+    margin-bottom: 8px; }
+    .games-history-games li:last-child {
+      margin-bottom: 0; }
+  .games-history-games strong {
+    border-radius: 1px;
+    /* margin-right: 6px; */
+    /* padding: 2px 6px; */
+    font-weight: bold;}
+    /* .games-history-games strong.Lost {
+      border: 1px solid #8F9EAB;
+      color: #67727B; }
+    .games-history-games strong.Won {
+      background: #67727B;
+      color: #FFF; } */
+  .games-history-games ul {
+    margin: 0;
+    padding: 0; }
+
 /* ---------------------------------------- */
 /* Mobile
 /* ---------------------------------------- */
