@@ -986,7 +986,10 @@ body {
         text-align: right; }
       .sidebar section .players-list tr td:last-child {
         text-align: right; }
-    .sidebar section .player-status {
+    /* .sidebar section .player-status {
+      display: none;
+      margin-right: 8px; } */
+    .sidebar section .player-delete {
       display: none;
       margin-right: 8px; }
     .sidebar section textarea {
