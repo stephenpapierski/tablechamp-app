@@ -756,6 +756,8 @@
             for (var i = 0; i < gamesData.length; i++) {
                 // console.log(gamesData[i]);
                 var game = gamesData[i];
+                
+                // TODO: make this safe for singles games
                 if (game.t1_points > game.t2_points) {
                     winTeam = game.t1p1.name + ' & ' + game.t1p2.name;
                     winPoints = game.t1_points;
