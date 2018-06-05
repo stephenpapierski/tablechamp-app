@@ -986,6 +986,19 @@ body {
         text-align: right; }
       .sidebar section .players-list tr td:last-child {
         text-align: right; }
+    .sidebar section .players-list-inactive {
+      width: 100%; }
+      .sidebar section .players-list-inactive th {
+        color: #67727B;
+        padding-bottom: 12px; }
+      .sidebar section .players-list-inactive tr td:first-child {
+        /* filter: blur(0.7px); */
+        opacity: 0.3; }
+      .sidebar section .players-list-inactive tr th:last-child {
+        text-align: right; }
+      .sidebar section .players-list-inactive tr td:last-child {
+        text-align: right;
+        opacity: 0.6; }
     /* .sidebar section .player-status {
       display: none;
       margin-right: 8px; } */

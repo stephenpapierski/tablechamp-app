@@ -372,16 +372,27 @@
     // ---------------------------------------------------
     function playerSettingsUpdate() {
         var playerSettingsUi = '';
+        var inactivePlayerSettingsUi = '';
         var playersArray = localData.playersArray;
         for (var i = 0; i < playersArray.length; i++) {
-            playerSettingsUi += tmpl('playersRow', {
-                'deleteLink': i18n.app.playersRow.deleteLink,
-                'key': playersArray[i].key,
-                'playerName': playersArray[i].name,
-                'playerStatus': (playersArray[i].status) ? 'Active' : 'Inactive'
-            });
+            if (playersArray[i].status) {
+                playerSettingsUi += tmpl('playersRow', {
+                    'deleteLink': i18n.app.playersRow.deleteLink,
+                    'key': playersArray[i].key,
+                    'playerName': playersArray[i].name,
+                    'playerStatus': (playersArray[i].status) ? 'Active' : 'Inactive'
+                });
+            } else {
+                inactivePlayerSettingsUi += tmpl('playersRow', {
+                    'deleteLink': i18n.app.playersRow.deleteLink,
+                    'key': playersArray[i].key,
+                    'playerName': playersArray[i].name,
+                    'playerStatus': (playersArray[i].status) ? 'Active' : 'Inactive'
+                });
+            }
         }
         $('.players-list').html(playerSettingsUi);
+        $('.players-list-inactive').html(inactivePlayerSettingsUi);
         playerSettingsEvents();
     }
     function playerSettingsEvents() {
