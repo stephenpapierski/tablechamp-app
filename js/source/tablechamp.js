@@ -67,7 +67,8 @@
             "logOut" : i18n.app.appHeader.logOut,
             "settings" : i18n.app.appHeader.settings,
             "singles" : i18n.app.appHeader.singles,
-            "games" : i18n.app.appHeader.games,
+            //"games" : i18n.app.appHeader.games,
+            "games" : "Games",
         }));
         $('.app .name').on('click', function() {
             sidebarShow();
