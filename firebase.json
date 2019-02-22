@@ -2,5 +2,13 @@
   "database": {
     "rules": "database.rules.json"
   },
-  "public": "."
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true
+  }
 }
