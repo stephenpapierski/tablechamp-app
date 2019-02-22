@@ -1141,10 +1141,11 @@ body.ru .sidebar .sidebar-menu a {
   /* float: center; */
   padding: 16px 20px;
   margin: 1% 0 0 1%;
-  width: 60%; }
+  width: 40%; }
   .games-history-games li {
     line-height: 30px;
     list-style: none;
+    text-align: left;
     margin-bottom: 8px; }
     .games-history-games li:last-child {
       margin-bottom: 0; }
@@ -1159,6 +1160,19 @@ body.ru .sidebar .sidebar-menu a {
     .games-history-games strong.Won {
       background: #67727B;
       color: #FFF; } */
+  .games-history-games strong.Date {
+    border: 1px solid #8F9EAB;
+    color: #67727B; 
+    width: 60%;
+    margin-right: 10px;
+    padding: 2px 6px; }
+  .games-history-games strong.Date-Alternate {
+    border: 1px solid #E5E5E5;
+    background: #67727B;
+    color: #FFF;
+    width: 60%;
+    margin-right: 6px;
+    padding: 2px 6px; }
   .games-history-games ul {
     margin: 0;
     padding: 0; }

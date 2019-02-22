@@ -710,6 +710,13 @@
     // ---------------------------------------------------
     // Game History
     // ---------------------------------------------------
+    function compareDate(a,b) {
+        if (a.dt > b.dt)
+            return -1;
+        if (a.dt < b.dt)
+          return 1;
+        return 0;
+}
     function gameHistoryUpdate(games) {
         // Get player games stuff
         fbdb.ref('/playersgame/').on('value', function(snapshot){
@@ -718,34 +725,40 @@
             var gameIds = [];
             var gameHistoryHtlm = '';
             var playersGame = snapshot.val();
+            var currentTime = Date.now();
+            var timeToDisplay = 604800000 //1 week
 
             for (var playerKey in playersGame) {
                 for (var playerGameKey in playersGame[playerKey]) {
                     // console.log(playersGame[playerKey][playerGameKey]);
                     var currentGameEntry = playersGame[playerKey][playerGameKey]
-                    if (!gameIds.includes(currentGameEntry.game)) {
-                        // Add game id to gameIds
-                        gameIds.push(currentGameEntry.game);
+                    //console.log(currentTime - currentGameEntry.dt);
+                    if (currentTime - currentGameEntry.dt <= timeToDisplay){
+                        if (!gameIds.includes(currentGameEntry.game)) {
+                            // Add game id to gameIds
+                            gameIds.push(currentGameEntry.game);
 
-                        // TODO: figure out what to do with deleted players
-                        //       At least add a check that shows ("deleted player")
-                        //       for now. Eventually, I'd like "deleted" players
-                        //       to just become inactive from future games
-                        gamesData.push({
-                            "dt" : currentGameEntry.dt,
-                            // "key" : playerGameKey,
-                            "game" : currentGameEntry.game,
-                            "t1p1" : localData.playersByKey[currentGameEntry.t1p1],
-                            "t1p2" : localData.playersByKey[currentGameEntry.t1p2] || '',
-                            "t2p1" : localData.playersByKey[currentGameEntry.t2p1],
-                            "t2p2" : localData.playersByKey[currentGameEntry.t2p2] || '',
-                            "t1_points" : currentGameEntry.t1_points,
-                            "t2_points" : currentGameEntry.t2_points,
-                            // "won" : currentGameEntry.won
-                        });
+                            // TODO: figure out what to do with deleted players
+                            //       At least add a check that shows ("deleted player")
+                            //       for now. Eventually, I'd like "deleted" players
+                            //       to just become inactive from future games
+                            gamesData.push({
+                                "dt" : currentGameEntry.dt,
+                                // "key" : playerGameKey,
+                                "game" : currentGameEntry.game,
+                                "t1p1" : localData.playersByKey[currentGameEntry.t1p1] || '',
+                                "t1p2" : localData.playersByKey[currentGameEntry.t1p2] || '',
+                                "t2p1" : localData.playersByKey[currentGameEntry.t2p1] || '',
+                                "t2p2" : localData.playersByKey[currentGameEntry.t2p2] || '',
+                                "t1_points" : currentGameEntry.t1_points,
+                                "t2_points" : currentGameEntry.t2_points,
+                                // "won" : currentGameEntry.won
+                            });
+                        }
                     }
                 }
             }
+            gamesData.sort(compareDate);
             // console.log(gamesData);
             // TODO: sort games based on dt timestamp
             // TODO: support output for singles games (just one player)
@@ -753,30 +766,60 @@
             var loseTeam = '';
             var winPoints;
             var losePoints;
-            for (var i = 0; i < gamesData.length; i++) {
-                // console.log(gamesData[i]);
-                var game = gamesData[i];
-                
-                // TODO: make this safe for singles games
-                if (game.t1_points > game.t2_points) {
-                    winTeam = game.t1p1.name + ' & ' + game.t1p2.name;
-                    winPoints = game.t1_points;
-                    loseTeam = game.t2p1.name + ' & ' + game.t2p2.name;
-                    losePoints = game.t2_points;
-                } else {
-                    loseTeam = game.t1p1.name + ' & ' + game.t1p2.name;
-                    losePoints = game.t1_points;
-                    winTeam = game.t2p1.name + ' & ' + game.t2p2.name;
-                    winPoints = game.t2_points;
+            var days = ['Sun','Mon','Tues','Wed','Thur','Fri','Sat'];
+            var previousDayOfWeek = 0;
+            var alternateRow = true;
+            var dateClass = "Date";
+
+            if (gamesData.length == 0){
+                // "There are no games to display from the past week"
+            }else{
+                for (var i = 0; i < gamesData.length; i++) {
+                    // console.log(gamesData[i]);
+                    var game = gamesData[i];
+                    //console.log(game);
+                    //if (typeof game.t1p1 == 'undefined') {
+                    //    continue;
+                    //}
+                    
+                    // TODO: make this safe for singles games
+                    if (game.t1_points > game.t2_points) {
+                        winTeam = game.t1p1.name + ' & ' + game.t1p2.name;
+                        winPoints = game.t1_points;
+                        loseTeam = game.t2p1.name + ' & ' + game.t2p2.name;
+                        losePoints = game.t2_points;
+                    } else {
+                        loseTeam = game.t1p1.name + ' & ' + game.t1p2.name;
+                        losePoints = game.t1_points;
+                        winTeam = game.t2p1.name + ' & ' + game.t2p2.name;
+                        winPoints = game.t2_points;
+                    }
+                    // console.log(winTeam + '(' + winPoints + ') ' + loseTeam + '(' + losePoints + ')');
+                    var date = new Date(game.dt);
+                    var dateF = days[date.getDay()] +' '+ (date.getMonth()+1)+'/'+ date.getDate();
+                    //console.log(date);
+                    //console.log(date.toLocaleDateString());
+                    if (date.getDay() != previousDayOfWeek) {
+                        alternateRow = !alternateRow;
+                    }
+
+                    if (alternateRow){
+                        dateClass = "Date";
+                    } else {
+                        dateClass = "Date-Alternate";
+                    }
+
+                    gameHistoryHtlm += tmpl('gamesHistory', {
+                        "date": dateF,
+                        "dateClass": dateClass,
+                        "t1" : winTeam,
+                        "t1Score" : winPoints,
+                        "t2" : loseTeam,
+                        "t2Score" : losePoints
+                    });
+                    $('.games-history .games-history-games ul').html(gameHistoryHtlm);
+                    previousDayOfWeek = date.getDay();
                 }
-                // console.log(winTeam + '(' + winPoints + ') ' + loseTeam + '(' + losePoints + ')');
-                gameHistoryHtlm += tmpl('gamesHistory', {
-                    "t1" : winTeam,
-                    "t1Score" : winPoints,
-                    "t2" : loseTeam,
-                    "t2Score" : losePoints
-                });
-                $('.games-history .games-history-games ul').html(gameHistoryHtlm);
             }
         });
 
