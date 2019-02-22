@@ -693,6 +693,7 @@ body {
     font-size: 24px;
     line-height: 24px;
     margin: 1% 0 0;
+    /* white-space: nowrap; */
     white-space: nowrap;
     width: 100%; }
     .top-rankings .ranking .movement {
@@ -986,7 +987,23 @@ body {
         text-align: right; }
       .sidebar section .players-list tr td:last-child {
         text-align: right; }
-    .sidebar section .player-status {
+    .sidebar section .players-list-inactive {
+      width: 100%; }
+      .sidebar section .players-list-inactive th {
+        color: #67727B;
+        padding-bottom: 12px; }
+      .sidebar section .players-list-inactive tr td:first-child {
+        /* filter: blur(0.7px); */
+        opacity: 0.3; }
+      .sidebar section .players-list-inactive tr th:last-child {
+        text-align: right; }
+      .sidebar section .players-list-inactive tr td:last-child {
+        text-align: right;
+        opacity: 0.6; }
+    /* .sidebar section .player-status {
+      display: none;
+      margin-right: 8px; } */
+    .sidebar section .player-delete {
       display: none;
       margin-right: 8px; }
     .sidebar section textarea {
@@ -1093,6 +1110,70 @@ body.ru .sidebar .sidebar-menu a {
       background: #67727B;
       color: #FFF; }
   .stats-player-games ul {
+    margin: 0;
+    padding: 0; }
+
+.games-history {
+  width: 100%; }
+  .games-history td {
+    padding: 5px;
+    text-align: center; }
+  .games-history th {
+    color: #666;
+    font-weight: bold;
+    padding: 5px; }
+  .games-history .table-header th {
+    text-align: center; }
+
+/* .games-history-container {
+  background: #FFF;
+  border: 1px solid #E5E5E5;
+  border-radius: 1px;
+  float: left;
+  padding: 16px;
+  width: 38%; } */
+
+.games-history-games {
+  display: inline-block;
+  /* float: right; */
+  background: #FFF;
+  border: 1px solid #E5E5E5;
+  /* float: center; */
+  padding: 16px 20px;
+  margin: 1% 0 0 1%;
+  width: 40%; }
+  .games-history-games li {
+    line-height: 30px;
+    list-style: none;
+    text-align: left;
+    margin-bottom: 8px; }
+    .games-history-games li:last-child {
+      margin-bottom: 0; }
+  .games-history-games strong {
+    border-radius: 1px;
+    /* margin-right: 6px; */
+    /* padding: 2px 6px; */
+    font-weight: bold;}
+    /* .games-history-games strong.Lost {
+      border: 1px solid #8F9EAB;
+      color: #67727B; }
+    .games-history-games strong.Won {
+      background: #67727B;
+      color: #FFF; } */
+  .games-history-games strong.Date {
+    border: 1px solid #8F9EAB;
+    color: #67727B; 
+    width: 60%;
+    margin-right: 10px;
+    padding: 2px 6px; }
+  .games-history-games strong.Date-Alternate {
+    border: 1px solid #E5E5E5;
+    background: #67727B;
+    color: #FFF;
+    width: 60%;
+    margin-right: 6px;
+    padding: 2px 6px; }
+  .games-history-games ul {
     margin: 0;
     padding: 0; }
 

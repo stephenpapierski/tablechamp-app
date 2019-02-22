@@ -56,6 +56,7 @@
         initEvents();
         initSettingsListener();
         initPlayersListener();
+        initGamesListener();
         initOfflineDetect();
         sidebarInit();
     }
@@ -65,7 +66,8 @@
             "doubles" : i18n.app.appHeader.doubles,
             "logOut" : i18n.app.appHeader.logOut,
             "settings" : i18n.app.appHeader.settings,
-            "singles" : i18n.app.appHeader.singles
+            "singles" : i18n.app.appHeader.singles,
+            "games" : i18n.app.appHeader.games,
         }));
         $('.app .name').on('click', function() {
             sidebarShow();
@@ -91,9 +93,9 @@
             return false;
         });
         // Ranking toggle
-        $('.ranking-toggle').on('click', function() {
+        $('.active-tab-toggle').on('click', function() {
             var thisView = $(this).data('view');
-            rankingToggle(thisView)
+            activeTabToggle(thisView)
             return false;
         });
         // Settings Link
@@ -164,6 +166,16 @@
             singlesRankingsUpdate();
             // Rankings events
             rankingsEvents();
+        });
+    }
+    function initGamesListener(){
+        // TODO: This should probably be
+        // 1) watching /playersgame/
+        // 2) update local copy of games by game id
+        // 3) ...then updating the game history with the local copy
+        fbdb.ref('/games/').on('value', function(snapshot) {
+            // Update the game history display
+            gameHistoryUpdate(snapshot.val());
         });
     }
     function initSettingsListener() {
@@ -360,16 +372,27 @@
     // ---------------------------------------------------
     function playerSettingsUpdate() {
         var playerSettingsUi = '';
+        var inactivePlayerSettingsUi = '';
         var playersArray = localData.playersArray;
         for (var i = 0; i < playersArray.length; i++) {
-            playerSettingsUi += tmpl('playersRow', {
-                'deleteLink': i18n.app.playersRow.deleteLink,
-                'key': playersArray[i].key,
-                'playerName': playersArray[i].name,
-                'playerStatus': (playersArray[i].status) ? 'Active' : 'Inactive'
-            });
+            if (playersArray[i].status) {
+                playerSettingsUi += tmpl('playersRow', {
+                    'deleteLink': i18n.app.playersRow.deleteLink,
+                    'key': playersArray[i].key,
+                    'playerName': playersArray[i].name,
+                    'playerStatus': (playersArray[i].status) ? 'Active' : 'Inactive'
+                });
+            } else {
+                inactivePlayerSettingsUi += tmpl('playersRow', {
+                    'deleteLink': i18n.app.playersRow.deleteLink,
+                    'key': playersArray[i].key,
+                    'playerName': playersArray[i].name,
+                    'playerStatus': (playersArray[i].status) ? 'Active' : 'Inactive'
+                });
+            }
         }
         $('.players-list').html(playerSettingsUi);
+        $('.players-list-inactive').html(inactivePlayerSettingsUi);
         playerSettingsEvents();
     }
     function playerSettingsEvents() {
@@ -611,17 +634,25 @@
         }
         return movement;
     }
-    function rankingToggle(viewType) {
+    function activeTabToggle(viewType) {
         var doubles = $('.doubles');
         var singles = $('.singles');
+        var games_history = $('.games-history');
         // Active link
-        $('.ranking-toggle').removeClass('is-selected');
-        $('.ranking-toggle[data-view="' + viewType + '"]').addClass('is-selected');
+        $('.active-tab-toggle').removeClass('is-selected');
+        $('.active-tab-toggle[data-view="' + viewType + '"]').addClass('is-selected');
         // Hide/show singles/doubles
-        if ('singles' === viewType) {
+        if ('games-history' === viewType){
+            games_history.fadeIn();
+            doubles.hide();
+            singles.hide();
+        }
+        else if ('singles' === viewType) {
+            games_history.hide();
             doubles.hide();
             singles.fadeIn();
         } else {
+            games_history.hide();
             singles.hide();
             doubles.fadeIn();
         }
@@ -630,18 +661,18 @@
         var singlesToggle = $('.singles-toggle');
         var doublesToggle = $('.doubles-toggle');
 
-        if (matchType == "singles") {
+        if (matchType == 'singles') {
             singlesToggle.show();
             doublesToggle.hide();
-            rankingToggle('singles')
-        } else if (matchType == "doubles") {
+            activeTabToggle('singles')
+        } else if (matchType == 'doubles') {
             singlesToggle.hide();
             doublesToggle.show();
-            rankingToggle('doubles');
+            activeTabToggle('doubles');
         } else{
             singlesToggle.show();
             doublesToggle.show();
-            rankingToggle('singles')
+            activeTabToggle('singles')
         }
     }
     function singlesRankingsUpdate() {
@@ -675,6 +706,123 @@
         }
         $('.singles .top-rankings').html(singlesTopRankings);
         $('.singles .rankings').html(singlesRankings);
+    }
+    // ---------------------------------------------------
+    // Game History
+    // ---------------------------------------------------
+    function compareDate(a,b) {
+        if (a.dt > b.dt)
+            return -1;
+        if (a.dt < b.dt)
+          return 1;
+        return 0;
+}
+    function gameHistoryUpdate(games) {
+        // Get player games stuff
+        fbdb.ref('/playersgame/').on('value', function(snapshot){
+            var gamesData = [];
+            // Ids of games already in gamesData
+            var gameIds = [];
+            var gameHistoryHtlm = '';
+            var playersGame = snapshot.val();
+            var currentTime = Date.now();
+            var timeToDisplay = 604800000 //1 week
+
+            for (var playerKey in playersGame) {
+                for (var playerGameKey in playersGame[playerKey]) {
+                    // console.log(playersGame[playerKey][playerGameKey]);
+                    var currentGameEntry = playersGame[playerKey][playerGameKey]
+                    //console.log(currentTime - currentGameEntry.dt);
+                    if (currentTime - currentGameEntry.dt <= timeToDisplay){
+                        if (!gameIds.includes(currentGameEntry.game)) {
+                            // Add game id to gameIds
+                            gameIds.push(currentGameEntry.game);
+
+                            // TODO: figure out what to do with deleted players
+                            //       At least add a check that shows ("deleted player")
+                            //       for now. Eventually, I'd like "deleted" players
+                            //       to just become inactive from future games
+                            gamesData.push({
+                                "dt" : currentGameEntry.dt,
+                                // "key" : playerGameKey,
+                                "game" : currentGameEntry.game,
+                                "t1p1" : localData.playersByKey[currentGameEntry.t1p1] || '',
+                                "t1p2" : localData.playersByKey[currentGameEntry.t1p2] || '',
+                                "t2p1" : localData.playersByKey[currentGameEntry.t2p1] || '',
+                                "t2p2" : localData.playersByKey[currentGameEntry.t2p2] || '',
+                                "t1_points" : currentGameEntry.t1_points,
+                                "t2_points" : currentGameEntry.t2_points,
+                                // "won" : currentGameEntry.won
+                            });
+                        }
+                    }
+                }
+            }
+            gamesData.sort(compareDate);
+            // console.log(gamesData);
+            // TODO: sort games based on dt timestamp
+            // TODO: support output for singles games (just one player)
+            var winTeam = '';
+            var loseTeam = '';
+            var winPoints;
+            var losePoints;
+            var days = ['Sun','Mon','Tues','Wed','Thur','Fri','Sat'];
+            var previousDayOfWeek = 0;
+            var alternateRow = true;
+            var dateClass = "Date";
+
+            if (gamesData.length == 0){
+                // "There are no games to display from the past week"
+            }else{
+                for (var i = 0; i < gamesData.length; i++) {
+                    // console.log(gamesData[i]);
+                    var game = gamesData[i];
+                    //console.log(game);
+                    //if (typeof game.t1p1 == 'undefined') {
+                    //    continue;
+                    //}
+                    
+                    // TODO: make this safe for singles games
+                    if (game.t1_points > game.t2_points) {
+                        winTeam = game.t1p1.name + ' & ' + game.t1p2.name;
+                        winPoints = game.t1_points;
+                        loseTeam = game.t2p1.name + ' & ' + game.t2p2.name;
+                        losePoints = game.t2_points;
+                    } else {
+                        loseTeam = game.t1p1.name + ' & ' + game.t1p2.name;
+                        losePoints = game.t1_points;
+                        winTeam = game.t2p1.name + ' & ' + game.t2p2.name;
+                        winPoints = game.t2_points;
+                    }
+                    // console.log(winTeam + '(' + winPoints + ') ' + loseTeam + '(' + losePoints + ')');
+                    var date = new Date(game.dt);
+                    var dateF = days[date.getDay()] +' '+ (date.getMonth()+1)+'/'+ date.getDate();
+                    //console.log(date);
+                    //console.log(date.toLocaleDateString());
+                    if (date.getDay() != previousDayOfWeek) {
+                        alternateRow = !alternateRow;
+                    }
+
+                    if (alternateRow){
+                        dateClass = "Date";
+                    } else {
+                        dateClass = "Date-Alternate";
+                    }
+
+                    gameHistoryHtlm += tmpl('gamesHistory', {
+                        "date": dateF,
+                        "dateClass": dateClass,
+                        "t1" : winTeam,
+                        "t1Score" : winPoints,
+                        "t2" : loseTeam,
+                        "t2Score" : losePoints
+                    });
+                    $('.games-history .games-history-games ul').html(gameHistoryHtlm);
+                    previousDayOfWeek = date.getDay();
+                }
+            }
+        });
+
     }
     // ---------------------------------------------------
     // Scoring
@@ -921,7 +1069,7 @@
             scoringSave('t2p1', 'doubles', t2p1Key, t2p1PointsNew, t2p1LastMovement, t2p1GamesLost, t2p1GamesWon, newGameKey, t1p1Key, t1p2Key, t2p1Key, t2p2Key, t1s, t2s, t2Won);
             scoringSave('t2p2', 'doubles', t2p2Key, t2p2PointsNew, t2p2LastMovement, t2p2GamesLost, t2p2GamesWon, newGameKey, t1p1Key, t1p2Key, t2p1Key, t2p2Key, t1s, t2s, t2Won);
             // Show doubles rankings
-            rankingToggle('doubles');
+            activeTabToggle('doubles');
         } else { // Singles
             // New singles player points
             var t1p1PointsNew = t1rp / decay_factor * [decay_factor - 1] + t1p / decay_factor;
@@ -987,7 +1135,7 @@
             scoringSave('t1p1', 'singles', t1p1Key, t1p1PointsNew, t1p1LastMovement, t1p1GamesLost, t1p1GamesWon, newGameKey, t1p1Key, '', t2p1Key, '', t1s, t2s, t1Won);
             scoringSave('t2p1', 'singles', t2p1Key, t2p1PointsNew, t2p1LastMovement, t2p1GamesLost, t2p1GamesWon, newGameKey, t1p1Key, '', t2p1Key, '', t1s, t2s, t2Won);
             // Show singles rankings
-            rankingToggle('singles');
+            activeTabToggle('singles');
         }
         // Confirmation --------------------
         // Close modal

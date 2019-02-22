@@ -5,7 +5,8 @@ var i18n = {
 			"doubles" : "Doubles",
 			"logOut" : "Log Out",
 			"settings" : "Settings",
-			"singles" : "Singles"
+			"singles" : "Singles",
+			"games" : "Games"
 		},
 		"global" : {
 			"nextButton" : "Next tab"
@@ -98,6 +99,9 @@ var i18n = {
 			"winPercentage" : "Win percentage",
 			"ranking" : "Ranking",
 			"singles" : "Singles"
+		},
+		"games" : {
+			"gameHistory" : "Game History"
 		}
 	},
 	"index" : {
